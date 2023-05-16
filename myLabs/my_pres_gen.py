@@ -21,7 +21,6 @@ def import_file(filename : str):
     """
     # import data file
     with open(filename) as file:
-        all_pres = []
         for line in file:
             # parse file
             data = line.split(":")
