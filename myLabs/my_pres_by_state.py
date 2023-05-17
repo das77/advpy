@@ -18,7 +18,6 @@ def import_file(filename : str):
     """
     with open(filename) as file:
         counts = {}
-        print(counts)
         for line in file:
             data = line.split(":")
             state = data[6]
