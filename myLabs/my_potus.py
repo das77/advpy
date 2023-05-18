@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 
 # other imports  (standard library, standard non-library, local)
 """
@@ -16,7 +15,7 @@ def import_file(filename : str):
     Imports file and parses data
     :type filename: object
     :param filename: String of path to file
-    :return: None
+    :return: tuple
     """
     # import data file
     all_pres = []
@@ -32,12 +31,23 @@ def import_file(filename : str):
             all_pres.append((term, name, bdate, ddate, bplace, bstate, tsdate, tedate, party))
     return all_pres
 
-def pres_record(term, name, bdate, ddate, bplace, bstate, tsdate, tedate, party):
+def pres_record(record):
     """
-    Unpoacks tuple into dict
+    Unpacks tuple into dict
     :return: dict
     """
-    return {"term": int(term), "name": name, "dob": bdate, "died": ddate, "birthplace": f'{bplace}, {bstate}', "term_start": tsdate, "term_end": tedate, "party": party }
+    term, name, bdate, ddate, bplace, bstate, tsdate, tedate, party = record
+    return {
+        "term": int(term),
+        "name": name,
+        "dob": bdate,
+        "died": ddate,
+        "birthplace": f'{bplace}, {bstate}',
+        "term_start": tsdate,
+        "term_end": tedate,
+        "party": party
+    }
+
 def get_info(file : str, term : int)-> list:
     """
     Finds president record for provided term number
@@ -47,8 +57,14 @@ def get_info(file : str, term : int)-> list:
     """
     try:
         get_pres = import_file(file)
-    except Exception as err:
-        raise Exception(f'Error importing data from file: {err}') from err
+    except FileNotFoundError as err:
+        raise FileNotFoundError from err
+    except ValueError as err:
+        raise ValueError from err
+    except PermissionError as err:
+        raise PermissionError from err
+    except IOError as err:
+        raise IOError from err
     try:
         pres_info = [pres_record(*data) for data in get_pres if pres_record(*data)['term'] == term]
     except Exception as err:
